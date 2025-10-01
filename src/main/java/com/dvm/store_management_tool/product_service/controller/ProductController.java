@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductController {
 
-    final ProductService productService;
+    private final ProductService productService;
 
     @GetMapping("/search")
     public ResponseEntity<List<ProductDto>> searchByName(@RequestParam("name") String name) {

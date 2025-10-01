@@ -9,11 +9,25 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleProductNotFoundException(ProductNotFoundException e) {
+        return createErrorResponse(e);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
+        return createErrorResponse(e);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
+        return createErrorResponse(e);
+    }
+
+    private ResponseEntity<ErrorResponse> createErrorResponse(AppException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage(),
                 e.getErrorCode(),
                 e.getHttpStatus().value());
 
-        return new ResponseEntity<>(errorResponse.toString(), e.getHttpStatus());
+        return new ResponseEntity<>(errorResponse, e.getHttpStatus());
     }
 }
