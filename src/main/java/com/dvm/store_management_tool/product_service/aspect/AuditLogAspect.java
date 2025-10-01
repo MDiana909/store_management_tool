@@ -25,7 +25,8 @@ public class AuditLogAspect {
     private final AuditLogJpaRepository auditLogJpaRepository;
     private final Logger LOGGER = LoggerFactory.getLogger(AuditLogAspect.class);
 
-    @Pointcut("execution(* com.dvm.store_management_tool.product_service.service.UserService.*(..))")
+    @Pointcut("execution(* com.dvm.store_management_tool.product_service.service.UserService.*(..)) ||" +
+            "execution(* com.dvm.store_management_tool.product_service.service.OrderService.*(..))")
     public void userOperations() {}
 
     @Before("userOperations()")
