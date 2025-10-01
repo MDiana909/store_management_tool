@@ -8,12 +8,14 @@ import com.dvm.store_management_tool.product_service.exception.ProductNotFoundEx
 import com.dvm.store_management_tool.product_service.mapper.ProductDtoMapper;
 import com.dvm.store_management_tool.product_service.repository.ProductJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
 
     private final ProductJpaRepository productJpaRepository;
@@ -22,13 +24,16 @@ public class ProductService {
         List<Product> products = productJpaRepository.findByNameContainingIgnoreCase(name);
 
         if (products.isEmpty()) {
+            log.warn("No product found with name {}", name);
             throw new ProductNotFoundException(name);
         }
 
+        log.info("Found {} products", products.size());
         return products;
     }
 
     public List<Product> getAllProducts() {
+        log.info("Getting all products");
         return productJpaRepository.findAll();
     }
 
@@ -40,6 +45,7 @@ public class ProductService {
                 .stock(request.stock())
                 .name(request.name())
                 .build();
+        log.info("Adding product {}", product);
 
         return productJpaRepository.save(product);
     }
@@ -53,11 +59,14 @@ public class ProductService {
         request.stock().ifPresent(productToUpdate::setStock);
         productJpaRepository.save(productToUpdate);
 
+        log.info("Successfully updated product {}", productToUpdate);
+
         return ProductDtoMapper.mapProductToDto(productToUpdate);
     }
 
     public void deleteProduct(final Long id) {
         if(productJpaRepository.findById(id).isEmpty()) {
+            log.warn("No product found with id {}", id);
             throw new ProductNotFoundException(id);
         }
         productJpaRepository.deleteById(id);

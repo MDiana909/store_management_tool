@@ -14,6 +14,7 @@ import com.dvm.store_management_tool.product_service.repository.OrderJpaReposito
 import com.dvm.store_management_tool.product_service.repository.ProductJpaRepository;
 import com.dvm.store_management_tool.product_service.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderJpaRepository orderJpaRepository;
@@ -29,8 +31,13 @@ public class OrderService {
 
     public Order createNewOrder(CreateOrderRequest request) {
         Order order = new Order();
-        User createdBy = userJpaRepository.findById(request.createdById()).orElseThrow(() -> new UserNotFoundException(request.createdById()));
+        User createdBy = userJpaRepository.findById(request.createdById()).orElseThrow(() -> {
+            log.warn("User not found with id {}", request.createdById());
+            return new UserNotFoundException(request.createdById());
+        });
         order.setCreatedBy(createdBy);
+
+        log.info("User that created the order: {}", createdBy);
 
         List<OrderItem> orderItems = request.orderItems().stream()
                         .map(item ->
@@ -49,6 +56,7 @@ public class OrderService {
 
             int stockLeft = product.getStock() - orderItem.getQuantity();
             if(stockLeft <= 0) {
+                log.warn("Product {} has no stock left", orderItem.getProduct().getId());
                 throw new NotEnoughProductsException(product.getName(), product.getStock(), orderItem.getQuantity());
             }
             else {
@@ -58,10 +66,12 @@ public class OrderService {
                 order.setTotalAmount(order.getTotalAmount().add(item.getTotalPrice()));
             }
         }
+        log.info("Order has been successfully created: {}", order);
         return orderJpaRepository.save(order);
     }
 
     public List<Order> findAllOrders() {
+        log.info("Getting all Orders");
         return orderJpaRepository.findAll();
     }
 
