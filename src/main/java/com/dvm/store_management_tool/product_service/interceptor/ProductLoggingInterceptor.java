@@ -8,18 +8,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-public class UserLoggingInterceptor implements HandlerInterceptor {
+public class ProductLoggingInterceptor implements HandlerInterceptor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserLoggingInterceptor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductLoggingInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        LOGGER.info("Incoming Request for User API: Method = {}, URI = {}", request.getMethod(), request.getRequestURI());
+        LOGGER.info("Incoming Request for Product API: Method = {}, URI = {}", request.getMethod(), request.getRequestURI());
         return true;
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        LOGGER.info("Outgoing Response from User API: Status = {}", response.getStatus());
+        LOGGER.info("Outgoing Response from Product API: Status = {}", response.getStatus());
     }
 }
