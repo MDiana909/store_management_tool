@@ -38,21 +38,15 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserCreateRequest request) {
-        User newUser = new User();
-        newUser.setUsername(request.username());
-        newUser.setPassword(request.password());
-        newUser.setRole(request.role());
+        User savedUser = userService.addUser(request);
 
-        User savedUser = userService.addUser(newUser);
         return ResponseEntity.ok(UserDtoMapper.mapUserToDto(savedUser));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUserRole(@Valid @RequestBody UserUpdateRequest request, @PathVariable Long id) {
-        User user = new User();
-        user.setRole(request.role());
+        User updatedUser = userService.updateUserRole(request, id);
 
-        User updatedUser = userService.updateUserRole(user, id);
         return ResponseEntity.ok(UserDtoMapper.mapUserToDto(updatedUser));
     }
 

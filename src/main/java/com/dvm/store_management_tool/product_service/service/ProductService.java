@@ -1,5 +1,7 @@
 package com.dvm.store_management_tool.product_service.service;
 
+import com.dvm.store_management_tool.product_service.dto.product.ProductCreateRequest;
+import com.dvm.store_management_tool.product_service.dto.product.ProductUpdateRequest;
 import com.dvm.store_management_tool.product_service.entity.Product;
 import com.dvm.store_management_tool.product_service.exception.ProductNotFoundException;
 import com.dvm.store_management_tool.product_service.repository.ProductJpaRepository;
@@ -28,15 +30,23 @@ public class ProductService {
         return productJpaRepository.findAll();
     }
 
-    public Product addProduct(final Product product) {
+    public Product addProduct(ProductCreateRequest request) {
+        Product product = Product.builder()
+                .description(request.description())
+                .category(request.category())
+                .price(request.price())
+                .stock(request.stock())
+                .name(request.name())
+                .build();
+
         return productJpaRepository.save(product);
     }
 
-    public Product updateProductName(final Product updatedProduct, final Long id) {
+    public Product updateProductName(final ProductUpdateRequest request, final Long id) {
         Product productToUpdate = productJpaRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
-        productToUpdate.setName(updatedProduct.getName());
+        productToUpdate.setName(request.name());
         return productJpaRepository.save(productToUpdate);
     }
 

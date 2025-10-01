@@ -42,24 +42,15 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductCreateRequest request) {
-        Product product = new Product();
-        product.setDescription(request.description());
-        product.setPrice(request.price());
-        product.setStock(request.stock());
-        product.setCategory(request.category());
-        product.setName(request.name());
-
-        Product newProduct = productService.addProduct(product);
+        Product newProduct = productService.addProduct(request);
 
         return ResponseEntity.ok(ProductDtoMapper.mapProductToDto(newProduct));
     }
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<ProductDto> updateProductName(@Valid @RequestBody ProductUpdateRequest request, @PathVariable Long id) {
-        Product product = new Product();
-        product.setName(request.name());
+        Product updatedProduct = productService.updateProductName(request, id);
 
-        Product updatedProduct = productService.updateProductName(product, id);
         return ResponseEntity.ok(ProductDtoMapper.mapProductToDto(updatedProduct));
     }
 

@@ -1,5 +1,7 @@
 package com.dvm.store_management_tool.product_service.service;
 
+import com.dvm.store_management_tool.product_service.dto.user.UserCreateRequest;
+import com.dvm.store_management_tool.product_service.dto.user.UserUpdateRequest;
 import com.dvm.store_management_tool.product_service.entity.User;
 import com.dvm.store_management_tool.product_service.exception.UserAlreadyExistsException;
 import com.dvm.store_management_tool.product_service.exception.UserNotFoundException;
@@ -27,17 +29,24 @@ public class UserService implements UserDetailsService {
         return userJpaRepository.findAll();
     }
 
-    public User addUser(User user) {
-        if (userJpaRepository.existsByUsername(user.getUsername())) {
-            throw new UserAlreadyExistsException(user.getUsername());
+    public User addUser(UserCreateRequest user) {
+        if (userJpaRepository.existsByUsername(user.username())) {
+            throw new UserAlreadyExistsException(user.username());
         }
-        return userJpaRepository.save(user);
+
+        User newUser = User.builder()
+                .username(user.username())
+                .password(user.password())
+                .role(user.role()).build();
+
+        return userJpaRepository.save(newUser);
     }
 
-    public User updateUserRole(User user, Long id) {
+    public User updateUserRole(UserUpdateRequest user, Long id) {
         User userToBeUpdated = userJpaRepository.getReferenceById(id);
-        userToBeUpdated.setRole(user.getRole());
+        userToBeUpdated.setRole(user.role());
         userJpaRepository.save(userToBeUpdated);
+
         return userToBeUpdated;
     }
 
