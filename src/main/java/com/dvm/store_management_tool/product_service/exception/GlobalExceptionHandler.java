@@ -1,6 +1,8 @@
 package com.dvm.store_management_tool.product_service.exception;
 
 import com.dvm.store_management_tool.product_service.dto.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -26,6 +28,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotEnoughProductsException.class)
     public ResponseEntity<ErrorResponse> handleNotEnoughProductsException(NotEnoughProductsException e) {
         return createErrorResponse(e);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation failed: " + e.getMessage());
     }
 
     private ResponseEntity<ErrorResponse> createErrorResponse(AppException e) {
