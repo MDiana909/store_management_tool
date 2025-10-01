@@ -5,13 +5,16 @@ import com.dvm.store_management_tool.product_service.exception.UserAlreadyExists
 import com.dvm.store_management_tool.product_service.exception.UserNotFoundException;
 import com.dvm.store_management_tool.product_service.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserJpaRepository userJpaRepository;
 
@@ -40,5 +43,11 @@ public class UserService {
 
     public void deleteUserById(Long id) {
         userJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+        return userJpaRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 }
