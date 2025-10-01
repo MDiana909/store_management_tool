@@ -47,11 +47,9 @@ public class ProductController {
         return ResponseEntity.ok(ProductDtoMapper.mapProductToDto(newProduct));
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<ProductDto> updateProductName(@Valid @RequestBody ProductUpdateRequest request, @PathVariable Long id) {
-        Product updatedProduct = productService.updateProductName(request, id);
-
-        return ResponseEntity.ok(ProductDtoMapper.mapProductToDto(updatedProduct));
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductUpdateRequest request, @PathVariable Long id) {
+        return ResponseEntity.ok(productService.updateProductPartially(request, id));
     }
 
     @DeleteMapping

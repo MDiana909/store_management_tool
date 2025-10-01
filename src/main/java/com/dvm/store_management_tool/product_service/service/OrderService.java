@@ -5,6 +5,7 @@ import com.dvm.store_management_tool.product_service.entity.Order;
 import com.dvm.store_management_tool.product_service.entity.OrderItem;
 import com.dvm.store_management_tool.product_service.entity.Product;
 import com.dvm.store_management_tool.product_service.entity.User;
+import com.dvm.store_management_tool.product_service.exception.NotEnoughProductsException;
 import com.dvm.store_management_tool.product_service.exception.OrderNotFoundException;
 import com.dvm.store_management_tool.product_service.exception.ProductNotFoundException;
 import com.dvm.store_management_tool.product_service.exception.UserNotFoundException;
@@ -46,8 +47,16 @@ public class OrderService {
                     .quantity(orderItem.getQuantity())
                     .build();
 
-            order.addOrderItem(item);
-            order.setTotalAmount(order.getTotalAmount().add(item.getTotalPrice()));
+            int stockLeft = product.getStock() - orderItem.getQuantity();
+            if(stockLeft <= 0) {
+                throw new NotEnoughProductsException(product.getName(), product.getStock(), orderItem.getQuantity());
+            }
+            else {
+                product.setStock(stockLeft);
+                productJpaRepository.save(product);
+                order.addOrderItem(item);
+                order.setTotalAmount(order.getTotalAmount().add(item.getTotalPrice()));
+            }
         }
         return orderJpaRepository.save(order);
     }

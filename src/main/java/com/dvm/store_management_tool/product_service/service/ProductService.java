@@ -1,9 +1,11 @@
 package com.dvm.store_management_tool.product_service.service;
 
 import com.dvm.store_management_tool.product_service.dto.product.ProductCreateRequest;
+import com.dvm.store_management_tool.product_service.dto.product.ProductDto;
 import com.dvm.store_management_tool.product_service.dto.product.ProductUpdateRequest;
 import com.dvm.store_management_tool.product_service.entity.Product;
 import com.dvm.store_management_tool.product_service.exception.ProductNotFoundException;
+import com.dvm.store_management_tool.product_service.mapper.ProductDtoMapper;
 import com.dvm.store_management_tool.product_service.repository.ProductJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,12 +44,16 @@ public class ProductService {
         return productJpaRepository.save(product);
     }
 
-    public Product updateProductName(final ProductUpdateRequest request, final Long id) {
+    public ProductDto updateProductPartially(final ProductUpdateRequest request, final Long id) {
         Product productToUpdate = productJpaRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
-        productToUpdate.setName(request.name());
-        return productJpaRepository.save(productToUpdate);
+        request.name().ifPresent(productToUpdate::setName);
+        request.price().ifPresent(productToUpdate::setPrice);
+        request.stock().ifPresent(productToUpdate::setStock);
+        productJpaRepository.save(productToUpdate);
+
+        return ProductDtoMapper.mapProductToDto(productToUpdate);
     }
 
     public void deleteProduct(final Long id) {

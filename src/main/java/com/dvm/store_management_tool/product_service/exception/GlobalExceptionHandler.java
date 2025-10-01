@@ -23,6 +23,11 @@ public class GlobalExceptionHandler {
         return createErrorResponse(e);
     }
 
+    @ExceptionHandler(NotEnoughProductsException.class)
+    public ResponseEntity<ErrorResponse> handleNotEnoughProductsException(NotEnoughProductsException e) {
+        return createErrorResponse(e);
+    }
+
     private ResponseEntity<ErrorResponse> createErrorResponse(AppException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage(),
                 e.getErrorCode(),
