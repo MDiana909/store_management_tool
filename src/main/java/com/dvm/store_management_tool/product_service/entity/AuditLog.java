@@ -1,6 +1,8 @@
 package com.dvm.store_management_tool.product_service.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.Date;
@@ -16,15 +18,16 @@ public class AuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotNull
+    @Size(min = 1, max = 50, message = "Username must be between 1 and 50 characters.")
     private String username;
 
-    @Column(nullable = false)
+    @NotNull
     private String actionTaken;
 
-    @Column(nullable = false)
+    @NotNull
     private Date timestamp;
 
-    @Column(nullable = false)
+    @NotNull
     private String accessedResource;
 }

@@ -1,6 +1,8 @@
 package com.dvm.store_management_tool.product_service.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,10 +22,17 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false)
+
+    @NotNull
+    @Size(min = 1, max = 50, message = "Username must be between 1 and 50 characters.")
+    @Column(unique = true)
     private String username;
-    @Column(nullable = false)
+
+    @NotNull
+    @Size(min = 8, message = "Password must have at least 8 characters.")
     private String password;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
 

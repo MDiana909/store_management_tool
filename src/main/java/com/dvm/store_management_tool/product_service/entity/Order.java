@@ -1,6 +1,8 @@
 package com.dvm.store_management_tool.product_service.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,12 +19,16 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    @NotNull
+    @Min(0)
     private BigDecimal totalAmount =  BigDecimal.ZERO;
 
+    @NotNull
     @OneToMany(mappedBy = "order",
     cascade = CascadeType.ALL,
     orphanRemoval = true)
