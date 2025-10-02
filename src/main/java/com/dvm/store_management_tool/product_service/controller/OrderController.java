@@ -21,6 +21,9 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<OrderDto>> getAllOrders() {
         List<Order> orders = orderService.findAllOrders();
+        if(orders == null || orders.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         List<OrderDto> ordersDto = orders.stream()
                 .map(OrderDtoMapper::mapOrderToDto)
                 .toList();
@@ -31,6 +34,10 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderDto> createOrder(@RequestBody CreateOrderRequest request) {
         Order newOrder = orderService.createNewOrder(request);
+
+        if(newOrder == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(OrderDtoMapper.mapOrderToDto(newOrder));
