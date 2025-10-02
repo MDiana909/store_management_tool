@@ -9,5 +9,5 @@ import java.util.List;
  * Request DTO for creating a new order.
  * @param orderItems the list of items to be added in the order. Contains product id and quantity.
  */
-public record CreateOrderRequest(@NotBlank List<CreateOrderItemRequest> orderItems) {
+public record CreateOrderRequest(List<CreateOrderItemRequest> orderItems) {
 }

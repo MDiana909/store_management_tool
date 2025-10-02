@@ -103,7 +103,6 @@ public class UserController {
             @Valid
             @RequestBody
             final UserUpdateRequest request,
-            @NotBlank
             @PathVariable final Long id) {
         final User updatedUser = userService.updateUserRole(request, id);
 
@@ -117,7 +116,6 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(
-            @NotBlank
             @PathVariable
             final Long id) {
         userService.deleteUserById(id);

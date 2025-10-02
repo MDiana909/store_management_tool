@@ -36,7 +36,7 @@ public class AuditLogAspect {
     public void userOperations() {}
 
     /**
-     * Advice to run before the execution of any methods of the UserService or OrderService.
+     * Advice to run before the execution of any methods of the UserService or OrderService to log actions.
      * @param joinpoint the join point that represents the intercepted method
      */
     @Before("userOperations()")

@@ -3,7 +3,6 @@ package com.dvm.store_management_tool.product_service.controller;
 import com.dvm.store_management_tool.product_service.dto.product.ProductCreateRequest;
 import com.dvm.store_management_tool.product_service.dto.product.ProductDto;
 import com.dvm.store_management_tool.product_service.dto.product.ProductUpdateRequest;
-import com.dvm.store_management_tool.product_service.entity.Order;
 import com.dvm.store_management_tool.product_service.entity.Product;
 import com.dvm.store_management_tool.product_service.mapper.ProductDtoMapper;
 import com.dvm.store_management_tool.product_service.service.ProductService;
@@ -103,7 +102,6 @@ public class ProductController {
             @Valid
             @RequestBody
             final ProductUpdateRequest request,
-            @NotBlank
             @PathVariable
             final Long id) {
         return ResponseEntity.ok(productService.updateProductPartially(request, id));
@@ -114,9 +112,9 @@ public class ProductController {
      * @param id the id of the product to be deleted.
      * @return a ResponseEntity with HTTP 204 No Content if the product is deleted successfully.
      */
-    @DeleteMapping
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteProduct(
-            @RequestParam
+            @PathVariable
             final Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
