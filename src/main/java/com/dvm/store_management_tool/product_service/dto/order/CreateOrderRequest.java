@@ -5,5 +5,5 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 
-public record CreateOrderRequest(@NotBlank Long createdById, @NotBlank List<CreateOrderItemRequest> orderItems) {
+public record CreateOrderRequest(@NotBlank List<CreateOrderItemRequest> orderItems) {
 }
