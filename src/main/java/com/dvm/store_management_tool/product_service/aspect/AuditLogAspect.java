@@ -18,19 +18,29 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Date;
 
+/**
+ * Aspect for auditing activity on user and order services.
+ */
 @Aspect
 @Component
 @RequiredArgsConstructor
 public class AuditLogAspect {
     private final AuditLogJpaRepository auditLogJpaRepository;
-    private final Logger LOGGER = LoggerFactory.getLogger(AuditLogAspect.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuditLogAspect.class);
 
+    /**
+     * Pointcut to match all methods of the UserService and OrderService classes.
+     */
     @Pointcut("execution(* com.dvm.store_management_tool.product_service.service.UserService.*(..)) ||" +
             "execution(* com.dvm.store_management_tool.product_service.service.OrderService.*(..))")
     public void userOperations() {}
 
+    /**
+     * Advice to run before the execution of any methods of the UserService or OrderService.
+     * @param joinpoint the join point that represents the intercepted method
+     */
     @Before("userOperations()")
-    public void logUserActivity(JoinPoint joinpoint) {
+    public void logUserActivity(final JoinPoint joinpoint) {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final String username = (authentication != null && authentication.isAuthenticated()) ? authentication.getName() : "UNAUTHENTICATED_USER";
 
@@ -41,7 +51,7 @@ public class AuditLogAspect {
 
         final Date timestamp = new Date();
 
-        AuditLog auditLogs = AuditLog.builder()
+        final AuditLog auditLogs = AuditLog.builder()
                         .username(username)
                         .actionTaken(actionTaken)
                         .accessedResource(accessedResource)

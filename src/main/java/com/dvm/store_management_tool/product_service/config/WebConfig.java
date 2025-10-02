@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Configuration class for registering interceptors.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
@@ -16,8 +19,11 @@ public class WebConfig implements WebMvcConfigurer {
     private final OrderLoggingInterceptor orderLoggingInterceptor;
     private final ProductLoggingInterceptor productLoggingInterceptor;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(userLoggingInterceptor).addPathPatterns("/api/users/**");
         registry.addInterceptor(orderLoggingInterceptor).addPathPatterns("/api/orders/**");
         registry.addInterceptor(productLoggingInterceptor).addPathPatterns("/api/products/**");

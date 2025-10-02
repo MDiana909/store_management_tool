@@ -8,5 +8,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * DTO representing an order returned as response.
+ * @param id the id of the order.
+ * @param createdBy the user(staff) that created the order.
+ * @param orderItems the list of items that have been added to the order.
+ * @param totalAmount the total price of the order.
+ */
 public record OrderDto(@NotBlank Long id, @NotBlank UserDto createdBy, @NotBlank List<OrderItemDto> orderItems, @PositiveOrZero BigDecimal totalAmount) {
 }

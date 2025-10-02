@@ -6,5 +6,13 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
 
-public record ProductCreateRequest  (@NotBlank String name, @PositiveOrZero BigDecimal price, @NotBlank String description, @PositiveOrZero int stock, Category category){
+/**
+ * Request DTO for creating a new product.
+ * @param name the name of the product.
+ * @param price the price of the product.
+ * @param description the description of the product.
+ * @param stock the stock of the product.
+ * @param category the category of the product.
+ */
+public record ProductCreateRequest (@NotBlank String name, @PositiveOrZero BigDecimal price, @NotBlank String description, @PositiveOrZero int stock, Category category){
 }
