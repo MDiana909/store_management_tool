@@ -10,10 +10,10 @@ import com.dvm.store_management_tool.product_service.exception.NotEnoughProducts
 import com.dvm.store_management_tool.product_service.exception.OrderNotFoundException;
 import com.dvm.store_management_tool.product_service.exception.ProductNotFoundException;
 import com.dvm.store_management_tool.product_service.exception.UserNotFoundException;
+import com.dvm.store_management_tool.product_service.mapper.OrderItemDtoMapper;
 import com.dvm.store_management_tool.product_service.repository.OrderJpaRepository;
 import com.dvm.store_management_tool.product_service.repository.ProductJpaRepository;
 import com.dvm.store_management_tool.product_service.repository.UserJpaRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,8 +31,7 @@ public class OrderService {
     private final ProductJpaRepository productJpaRepository;
     private final UserJpaRepository userJpaRepository;
 
-    @Transactional
-    public Order createNewOrder(CreateOrderRequest request) {
+    public Order createNewOrder(final CreateOrderRequest request) {
         final User createdBy = getCurrentlyAuthenticatedUser();
         log.info("The user creating the order: {}", createdBy);
 
@@ -40,7 +39,7 @@ public class OrderService {
         order.setCreatedBy(createdBy);
         order.setTotalAmount(BigDecimal.ZERO);
 
-        List<OrderItem> orderItems = mapCreateOrderRequestToOrderItems(request);
+        final List<OrderItem> orderItems = mapCreateOrderRequestToOrderItems(request);
 
         orderItems.forEach(this::updateAndValidateStock);
 
@@ -50,7 +49,7 @@ public class OrderService {
                 .map(OrderItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add));
 
-        Order savedOrder = orderJpaRepository.save(order);
+        final Order savedOrder = orderJpaRepository.save(order);
 
         log.info("Order has been successfully created: {}", order);
 
@@ -76,25 +75,21 @@ public class OrderService {
         });
     }
 
-    private List<OrderItem> mapCreateOrderRequestToOrderItems(CreateOrderRequest createOrderRequest) {
+    private List<OrderItem> mapCreateOrderRequestToOrderItems(final CreateOrderRequest createOrderRequest) {
         return createOrderRequest.orderItems().stream()
                 .map((CreateOrderItemRequest item) ->
                         {
                             final Product product = productJpaRepository.findById(item.productId())
                                     .orElseThrow(() -> new ProductNotFoundException(item.productId()));
 
-                            return OrderItem.builder()
-                                    .product(product)
-                                    .totalPrice(BigDecimal.valueOf(item.quantity()).multiply(product.getPrice()))
-                                    .quantity(item.quantity())
-                                    .build();
+                            return OrderItemDtoMapper.mapCreateRequestDtoToOrderItem(item.quantity(), product);
                         })
                 .toList();
     }
 
-    private void updateAndValidateStock (OrderItem orderItem) {
-        Product product = orderItem.getProduct();
-        int stockLeft = product.getStock() - orderItem.getQuantity();
+    private void updateAndValidateStock (final OrderItem orderItem) {
+        final Product product = orderItem.getProduct();
+        final int stockLeft = product.getStock() - orderItem.getQuantity();
 
         if(stockLeft < 0) {
             log.warn("Not enough products of type {} available. Requested: {}. Available: {}", product.getName(), orderItem.getQuantity(), product.getStock());

@@ -1,8 +1,6 @@
 package com.dvm.store_management_tool.product_service.dto.order_item;
 
 import com.dvm.store_management_tool.product_service.dto.product.ProductDto;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
 
@@ -13,5 +11,5 @@ import java.math.BigDecimal;
  * @param quantity the quantity of product that has been added to the order.
  * @param totalPrice the total price of the order item (product price x quantity).
  */
-public record OrderItemDto(@NotBlank Long id, @NotBlank ProductDto product, @PositiveOrZero int quantity, @PositiveOrZero BigDecimal totalPrice) {
+public record OrderItemDto(Long id, ProductDto product, int quantity, BigDecimal totalPrice) {
 }
